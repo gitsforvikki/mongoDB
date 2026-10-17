@@ -57,14 +57,14 @@ MongoDB databases, documents, BSON, CRUD, query operators, indexing, aggregation
 
 ### [Section 4 — Indexes & Query Performance](./04-indexing-performance/README.md)
 
-- [Lesson 029 — What Is an Index and Why Is It Needed?](./04-indexing-performance/README.md#lesson-029-what-is-an-index-and-why-is-it-needed)
-- [Lesson 030 — Single-Field and Compound Indexes](./04-indexing-performance/README.md#lesson-030-single-field-and-compound-indexes)
-- [Lesson 031 — Unique, Sparse and Partial Indexes](./04-indexing-performance/README.md#lesson-031-unique-sparse-and-partial-indexes)
-- [Lesson 032 — Multikey and Text Indexes](./04-indexing-performance/README.md#lesson-032-multikey-and-text-indexes)
-- [Lesson 033 — TTL and Specialized Indexes](./04-indexing-performance/README.md#lesson-033-ttl-and-specialized-indexes)
-- [Lesson 034 — Explain Plans and Query Execution](./04-indexing-performance/README.md#lesson-034-explain-plans-and-query-execution)
-- [Lesson 035 — Index Design and Trade-offs](./04-indexing-performance/README.md#lesson-035-index-design-and-trade-offs)
-- [Lesson 036 — Performance and Pagination Lab](./04-indexing-performance/README.md#lesson-036-performance-and-pagination-lab)
+- [Lesson 029 — What Is an Index and Why Is It Needed?](./04-indexing-performance/029-what-is-index.md)
+- [Lesson 030 — Single-Field and Compound Indexes](./04-indexing-performance/030-single-compound-indexes.md)
+- [Lesson 031 — Unique, Sparse and Partial Indexes](./04-indexing-performance/031-unique-sparse-partial.md)
+- [Lesson 032 — Multikey and Text Indexes](./04-indexing-performance/032-multikey-text-indexes.md)
+- [Lesson 033 — TTL and Specialized Indexes](./04-indexing-performance/033-ttl-specialized-indexes.md)
+- [Lesson 034 — Explain Plans and Query Execution](./04-indexing-performance/034-explain-plans.md)
+- [Lesson 035 — Index Design and Trade-offs](./04-indexing-performance/035-index-tradeoffs.md)
+- [Lesson 036 — Performance and Pagination Lab](./04-indexing-performance/036-performance-pagination-lab.md)
 
 ### [Section 5 — Aggregation Pipeline](./05-aggregation/README.md)
 
