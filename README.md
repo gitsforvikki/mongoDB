@@ -22,11 +22,11 @@ MongoDB databases, documents, BSON, CRUD, query operators, indexing, aggregation
 
 - [Lesson 001 — What Is MongoDB and Why Use It?](./01-mongodb-foundations/001-what-is-mongodb.md)
 - [Lesson 002 — MongoDB vs Mongoose vs Atlas](./01-mongodb-foundations/002-mongodb-vs-mongoose-vs-atlas.md)
-- [Lesson 003 — Installation: Local MongoDB, Compass and mongosh](./01-mongodb-foundations/README.md#lesson-003-installation-local-mongodb-compass-and-mongosh)
-- [Lesson 004 — MongoDB Atlas Setup and Connection Strings](./01-mongodb-foundations/README.md#lesson-004-mongodb-atlas-setup-and-connection-strings)
-- [Lesson 005 — Databases, Collections and Documents](./01-mongodb-foundations/README.md#lesson-005-databases-collections-and-documents)
-- [Lesson 006 — BSON, ObjectId and MongoDB Data Types](./01-mongodb-foundations/README.md#lesson-006-bson-objectid-and-mongodb-data-types)
-- [Lesson 007 — mongosh Essentials and Basic Commands](./01-mongodb-foundations/README.md#lesson-007-mongosh-essentials-and-basic-commands)
+- [Lesson 003 — Installation: Local MongoDB, Compass and mongosh](./01-mongodb-foundations/003-installation-local-mongodb-compass-mongosh.md)
+- [Lesson 004 — MongoDB Atlas Setup and Connection Strings](./01-mongodb-foundations/004-mongodb-atlas-setup-connection-strings.md)
+- [Lesson 005 — Databases, Collections and Documents](./01-mongodb-foundations/005-databases-collections-documents.md)
+- [Lesson 006 — BSON, ObjectId and MongoDB Data Types](./01-mongodb-foundations/006-bson-objectid-data-types.md)
+- [Lesson 007 — mongosh Essentials and Basic Commands](./01-mongodb-foundations/007-mongosh-essentials-basic-commands.md)
 - [Lesson 008 — MongoDB CRUD Mental Model](./01-mongodb-foundations/README.md#lesson-008-mongodb-crud-mental-model)
 
 ### [Section 2 — MongoDB CRUD & Querying](./02-crud-and-querying/README.md)
