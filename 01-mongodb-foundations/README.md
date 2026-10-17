@@ -2,7 +2,7 @@
 
 [← Back to full curriculum](../README.md)
 
-> **Status:** Curriculum planned. Lesson content will be written incrementally; the headings below are clickable study checkpoints rather than finished lesson files.
+> **Status:** Lessons 001–002 are available as full Markdown lessons. The remaining headings are study checkpoints to be expanded later.
 
 ## Learning objectives
 
@@ -10,13 +10,13 @@ Understand mongodb foundations using MongoDB commands, Mongoose ODM where releva
 
 ## Lessons
 
-### Lesson 001 — What Is MongoDB and Why Use It?
+### [Lesson 001 — What Is MongoDB and Why Use It?](./001-what-is-mongodb.md)
 
 **You will learn:** Documents, collections, flexible schema, SQL comparison.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 002 — MongoDB vs Mongoose vs Atlas
+### [Lesson 002 — MongoDB vs Mongoose vs Atlas](./002-mongodb-vs-mongoose-vs-atlas.md)
 
 **You will learn:** Database, ODM and cloud-hosting roles.
 
