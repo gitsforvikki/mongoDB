@@ -2,6 +2,116 @@
 
 [← Section 6](./README.md) · [Full curriculum](../README.md)
 
+## Deep theory: casting, defaults, validators and persisted BSON
+
+A field definition is more than a JavaScript type annotation. Mongoose's **SchemaType** controls how a path is interpreted by the ODM: how incoming values are cast, what default is applied, which validators run, and how certain modifications are tracked.
+
+### Follow one document from input to persistence
+
+```js
+const schema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  age: { type: Number, required: true, min: 18 },
+  active: { type: Boolean, required: true, default: false },
+  joinedAt: { type: Date, default: Date.now }
+});
+const Member = mongoose.model("CourseMemberTypes", schema);
+const member = new Member({ name: "  Asha ", age: "24" });
+
+console.log(member.name);     // "Asha"
+console.log(member.age);      // 24
+console.log(member.active);   // false
+console.log(member.joinedAt instanceof Date); // true
+await member.validate();      // validation, no database insert
+```
+
+**Casting** tries to convert values into the declared path type. **Setters** such as `trim` transform values. **Defaults** fill in paths whose value is strictly `undefined`. **Validators** check rules, generally when validation runs. These are distinct mechanisms, even if they appear together in one field definition.
+
+### Why defaults use `undefined`, not `null`
+
+```js
+const a = new Member({ name: "Asha", age: 24 });
+const b = new Member({ name: "Ravi", age: 24, active: null });
+console.log(a.active); // false: default applied
+console.log(b.active); // null: explicit null prevents default
+```
+
+The second document fails the required Boolean validation because `null` is not accepted as present. By contrast, `false` **does** satisfy a required Boolean. For a required Number, `0` counts as present, although a `min` validator may reject it.
+
+### What if casting fails?
+
+```js
+const bad = new Member({ name: "Neha", age: "twenty" });
+try {
+  await bad.validate();
+} catch (error) {
+  console.log(error.name); // typically "ValidationError"
+  console.log(error.errors.age?.name); // "CastError"
+}
+```
+
+The underlying path problem is a **CastError** because `"twenty"` cannot be converted to a number. It is not a `min:18` failure: the value never became a usable number. When handling API errors, distinguish casting problems, failed validators and database duplicate-key errors.
+
+### Required is not the same as uniqueness
+
+```js
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, lowercase: true, trim: true }
+});
+userSchema.index({ email: 1 }, { unique: true });
+```
+
+`required` is a Mongoose validation rule; a unique index is enforced by **MongoDB** once created. Two concurrent requests may both pass Mongoose validation, but the database rejects the duplicate key. Handle error code `11000` and do not treat `unique` as a regular validator.
+
+### Arrays, embedded documents, and ownership
+
+A shipping address is often small and read with its parent order, so embedding makes sense. An order's growing event history may belong in a separate collection. Mongoose's ability to define `[subSchema]` does **not** mean embedding an unlimited array is a good database design.
+
+```mermaid
+flowchart TD
+  O["Order document"] --> A["Embedded shipping address"]
+  O --> I["Bounded order item snapshots"]
+  O --> E["Separate orderEvents collection"]
+```
+
+A single nested subdocument has its own validation/middleware behavior and can be absent. A plain nested object is treated differently. For arrays of subdocuments, Mongoose usually gives each child an `_id` unless the child schema disables it.
+
+### Numeric precision: why money needs a policy
+
+JavaScript floating-point arithmetic can surprise you:
+
+```js
+console.log(0.1 + 0.2 === 0.3); // false
+```
+
+For many INR applications, storing `priceMinor: 50100` to represent ₹501.00 is simple and predictable, provided amounts remain within JavaScript's safe integer range. Decimal128 is another option but requires deliberate conversion and serialization. Do not mix rupees, paise and floating-point totals across different code paths.
+
+### Update validators: an important trap
+
+```js
+await Member.updateOne(
+  { _id: member._id },
+  { $set: { age: 12 } },
+  { runValidators: true }
+);
+```
+
+Query updates do **not** behave exactly like `member.age = 12; await member.save()`. Update validators are opt-in for many query update methods and generally validate updated paths/operators rather than the entire existing document. They also have special `this` behavior for custom validators. Use the right operation for the rule you're enforcing, and test edge cases.
+
+### Schema-level security boundaries
+
+`strict:true` normally prevents unknown fields from being persisted through a model, but it is **not authorization**. A request containing `role:"ADMIN"` is dangerous if `role` is a legitimate schema path and you pass the entire request body to an update. Always validate the request and allowlist writable fields:
+
+```js
+const { name } = req.body; // only allow a user to edit their name
+await User.updateOne({ _id: req.user.id }, { $set: { name } }, { runValidators: true });
+```
+
+The example assumes authentication middleware has already established `req.user.id`; validate `name` before use.
+
+**Checkpoint:** Explain the difference between `undefined` and `null` for defaults, a cast error vs validator error, a required field vs unique index, and a schema type vs the BSON value actually stored in MongoDB.
+
+---
 ## Learning goals
 Understand important Mongoose SchemaTypes, casting, defaults, `required`, arrays, subdocuments, maps, ObjectIds and timestamps. Know where validation is and is not automatic.
 
