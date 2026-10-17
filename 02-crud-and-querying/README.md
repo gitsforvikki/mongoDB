@@ -10,7 +10,7 @@ Understand mongodb crud & querying using MongoDB commands, Mongoose ODM where re
 
 ## Lessons
 
-### Lesson 009 — Insert Documents: insertOne and insertMany
+### [Lesson 009 — Insert Documents: insertOne and insertMany](./009-insert-documents-insertone-insertmany.md)
 
 **You will learn:** Write user/product documents; ordered and unordered bulk behavior.
 
