@@ -2,7 +2,7 @@
 
 [← Back to full curriculum](../README.md)
 
-> **Status:** In progress — first half (Lessons 068–072) published; second half (073–077) planned.
+> **Status:** Complete — all 10 lessons (068–077) published.
 
 ## Learning objectives
 
