@@ -2,7 +2,7 @@
 
 [← Back to full curriculum](../README.md)
 
-> **Status:** In progress — Lessons 056–059 published; Lessons 060–067 planned.
+> **Status:** In progress — Lessons 056–063 published; Lessons 064–067 planned.
 
 ## Learning objectives
 
