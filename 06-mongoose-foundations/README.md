@@ -2,7 +2,7 @@
 
 [← Back to full curriculum](../README.md)
 
-> **Status:** In progress — Lessons 046–049 published; Lessons 050–055 remain planned.
+> **Status:** In progress — Lessons 046–050 published; Lessons 051–055 remain planned.
 
 ## Learning objectives
 
@@ -34,7 +34,7 @@ Understand mongoose odm fundamentals using MongoDB commands, Mongoose ODM where 
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 050 — Creating and Reading Documents
+### [Lesson 050 — Creating and Reading Documents](./050-creating-reading-documents.md)
 
 **You will learn:** Model.create, find, findById and query execution.
 
