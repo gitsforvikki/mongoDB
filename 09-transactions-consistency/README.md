@@ -10,43 +10,43 @@ Understand transactions, concurrency & consistency using MongoDB commands, Mongo
 
 ## Lessons
 
-### Lesson 078 — MongoDB Atomicity and Isolation Basics
+### [Lesson 078 — MongoDB Atomicity and Isolation Basics](./078-mongodb-atomicity-isolation-basics.md)
 
 **You will learn:** Atomic per-document operations.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 079 — Race Conditions and Conditional Updates
+### [Lesson 079 — Race Conditions and Conditional Updates](./079-race-conditions-conditional-updates.md)
 
 **You will learn:** Inventory reservation and lost updates.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 080 — Transactions with Mongoose Sessions
+### [Lesson 080 — Transactions with Mongoose Sessions](./080-transactions-mongoose-sessions.md)
 
 **You will learn:** Multi-document transaction walkthrough.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 081 — Retryable Writes and Transaction Retries
+### [Lesson 081 — Retryable Writes and Transaction Retries](./081-retryable-writes-transaction-retries.md)
 
 **You will learn:** Transient failures and commit uncertainty.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 082 — Idempotency Keys and Unique Constraints
+### [Lesson 082 — Idempotency Keys and Unique Constraints](./082-idempotency-keys-unique-constraints.md)
 
 **You will learn:** Avoid duplicate orders/payments.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 083 — Consistency and Read/Write Concerns
+### [Lesson 083 — Consistency and Read/Write Concerns](./083-consistency-read-write-concerns.md)
 
 **You will learn:** Trade-offs and safe defaults.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 084 — Change Streams Introduction
+### [Lesson 084 — Change Streams Introduction](./084-change-streams-introduction.md)
 
 **You will learn:** Watching DB changes and topology requirements.
 
