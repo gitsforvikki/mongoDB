@@ -2,7 +2,7 @@
 
 [← Back to full curriculum](../README.md)
 
-> **Status:** Curriculum planned. Lesson content will be written incrementally; the headings below are clickable study checkpoints rather than finished lesson files.
+> **Status:** Complete — all 8 lessons (021–028) are published with practical examples and Mermaid diagrams.
 
 ## Learning objectives
 
@@ -10,49 +10,49 @@ Understand document modeling & schema design using MongoDB commands, Mongoose OD
 
 ## Lessons
 
-### Lesson 021 — Embedding vs Referencing
+### [Lesson 021 — Embedding vs Referencing](./021-embedding-vs-referencing.md)
 
 **You will learn:** When to nest vs link entities.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 022 — One-to-One and One-to-Many Relationships
+### [Lesson 022 — One-to-One and One-to-Many Relationships](./022-one-to-one-one-to-many.md)
 
 **You will learn:** Users, addresses, products and orders.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 023 — Many-to-Many Relationships
+### [Lesson 023 — Many-to-Many Relationships](./023-many-to-many.md)
 
 **You will learn:** Students/courses or products/categories.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 024 — Designing E-commerce Schemas
+### [Lesson 024 — Designing E-commerce Schemas](./024-ecommerce-schemas.md)
 
 **You will learn:** Orders with line-item snapshots and product references.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 025 — Schema Design for Queries and Growth
+### [Lesson 025 — Schema Design for Queries and Growth](./025-schema-design-queries-growth.md)
 
 **You will learn:** Access patterns, duplication, bounded arrays.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 026 — Document Limits and Modeling Anti-patterns
+### [Lesson 026 — Document Limits and Modeling Anti-patterns](./026-document-limits-antipatterns.md)
 
 **You will learn:** 16 MiB limit, unbounded array, hot document.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 027 — MongoDB Schema Validation
+### [Lesson 027 — MongoDB Schema Validation](./027-mongodb-schema-validation.md)
 
 **You will learn:** Database-level JSON Schema validation.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 028 — Data Modeling Exercises and Review
+### [Lesson 028 — Data Modeling Exercises and Review](./028-modeling-exercises-review.md)
 
 **You will learn:** Design a job tracker, chat and shopping cart.
 
