@@ -68,15 +68,15 @@ MongoDB databases, documents, BSON, CRUD, query operators, indexing, aggregation
 
 ### [Section 5 — Aggregation Pipeline](./05-aggregation/README.md)
 
-- [Lesson 037 — Aggregation Concepts and Pipeline Flow](./05-aggregation/README.md#lesson-037-aggregation-concepts-and-pipeline-flow)
-- [Lesson 038 — $match, $project, $sort and $limit](./05-aggregation/README.md#lesson-038-match-project-sort-and-limit)
-- [Lesson 039 — $group and Accumulators](./05-aggregation/README.md#lesson-039-group-and-accumulators)
-- [Lesson 040 — $unwind and Array Processing](./05-aggregation/README.md#lesson-040-unwind-and-array-processing)
-- [Lesson 041 — $lookup and $facet](./05-aggregation/README.md#lesson-041-lookup-and-facet)
-- [Lesson 042 — $addFields, $set and Computed Values](./05-aggregation/README.md#lesson-042-addfields-set-and-computed-values)
-- [Lesson 043 — Dates, Strings and Conditional Expressions](./05-aggregation/README.md#lesson-043-dates-strings-and-conditional-expressions)
-- [Lesson 044 — Aggregations for E-commerce Analytics](./05-aggregation/README.md#lesson-044-aggregations-for-e-commerce-analytics)
-- [Lesson 045 — Aggregation Optimization](./05-aggregation/README.md#lesson-045-aggregation-optimization)
+- [Lesson 037 — Aggregation Concepts and Pipeline Flow](./05-aggregation/037-aggregation-concepts-pipeline-flow.md)
+- [Lesson 038 — $match, $project, $sort and $limit](./05-aggregation/038-match-project-sort-limit.md)
+- [Lesson 039 — $group and Accumulators](./05-aggregation/039-group-accumulators.md)
+- [Lesson 040 — $unwind and Array Processing](./05-aggregation/040-unwind-array-processing.md)
+- [Lesson 041 — $lookup and $facet](./05-aggregation/041-lookup-facet.md)
+- [Lesson 042 — $addFields, $set and Computed Values](./05-aggregation/042-addfields-set-computed.md)
+- [Lesson 043 — Dates, Strings and Conditional Expressions](./05-aggregation/043-dates-strings-conditions.md)
+- [Lesson 044 — Aggregations for E-commerce Analytics](./05-aggregation/044-ecommerce-analytics.md)
+- [Lesson 045 — Aggregation Optimization](./05-aggregation/045-aggregation-optimization.md)
 
 ### [Section 6 — Mongoose ODM Fundamentals](./06-mongoose-foundations/README.md)
 
