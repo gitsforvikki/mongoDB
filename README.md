@@ -31,7 +31,7 @@ MongoDB databases, documents, BSON, CRUD, query operators, indexing, aggregation
 
 ### [Section 2 — MongoDB CRUD & Querying](./02-crud-and-querying/README.md)
 
-- [Lesson 009 — Insert Documents: insertOne and insertMany](./02-crud-and-querying/README.md#lesson-009-insert-documents-insertone-and-insertmany)
+- [Lesson 009 — Insert Documents: insertOne and insertMany](./02-crud-and-querying/009-insert-documents-insertone-insertmany.md)
 - [Lesson 010 — Read Documents: find and findOne](./02-crud-and-querying/README.md#lesson-010-read-documents-find-and-findone)
 - [Lesson 011 — Comparison Query Operators](./02-crud-and-querying/README.md#lesson-011-comparison-query-operators)
 - [Lesson 012 — Logical and Element Operators](./02-crud-and-querying/README.md#lesson-012-logical-and-element-operators)
