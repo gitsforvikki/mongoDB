@@ -80,10 +80,10 @@ MongoDB databases, documents, BSON, CRUD, query operators, indexing, aggregation
 
 ### [Section 6 — Mongoose ODM Fundamentals](./06-mongoose-foundations/README.md)
 
-- [Lesson 046 — Why Mongoose? Driver vs ODM](./06-mongoose-foundations/README.md#lesson-046-why-mongoose-driver-vs-odm)
-- [Lesson 047 — Set Up Express 5 + Mongoose + Atlas](./06-mongoose-foundations/README.md#lesson-047-set-up-express-5-mongoose-atlas)
-- [Lesson 048 — Schemas and Models](./06-mongoose-foundations/README.md#lesson-048-schemas-and-models)
-- [Lesson 049 — Schema Types, Defaults and Required Fields](./06-mongoose-foundations/README.md#lesson-049-schema-types-defaults-and-required-fields)
+- [Lesson 046 — Why Mongoose? Driver vs ODM](./06-mongoose-foundations/046-why-mongoose-driver-vs-odm.md)
+- [Lesson 047 — Set Up Express 5 + Mongoose + Atlas](./06-mongoose-foundations/047-express5-mongoose-atlas-setup.md)
+- [Lesson 048 — Schemas and Models](./06-mongoose-foundations/048-schemas-models.md)
+- [Lesson 049 — Schema Types, Defaults and Required Fields](./06-mongoose-foundations/049-schema-types-defaults-required.md)
 - [Lesson 050 — Creating and Reading Documents](./06-mongoose-foundations/README.md#lesson-050-creating-and-reading-documents)
 - [Lesson 051 — Updating and Deleting Documents](./06-mongoose-foundations/README.md#lesson-051-updating-and-deleting-documents)
 - [Lesson 052 — Document save vs Query Updates](./06-mongoose-foundations/README.md#lesson-052-document-save-vs-query-updates)
