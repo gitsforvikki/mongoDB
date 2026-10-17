@@ -46,14 +46,14 @@ MongoDB databases, documents, BSON, CRUD, query operators, indexing, aggregation
 
 ### [Section 3 — Document Modeling & Schema Design](./03-data-modeling/README.md)
 
-- [Lesson 021 — Embedding vs Referencing](./03-data-modeling/README.md#lesson-021-embedding-vs-referencing)
-- [Lesson 022 — One-to-One and One-to-Many Relationships](./03-data-modeling/README.md#lesson-022-one-to-one-and-one-to-many-relationships)
-- [Lesson 023 — Many-to-Many Relationships](./03-data-modeling/README.md#lesson-023-many-to-many-relationships)
-- [Lesson 024 — Designing E-commerce Schemas](./03-data-modeling/README.md#lesson-024-designing-e-commerce-schemas)
-- [Lesson 025 — Schema Design for Queries and Growth](./03-data-modeling/README.md#lesson-025-schema-design-for-queries-and-growth)
-- [Lesson 026 — Document Limits and Modeling Anti-patterns](./03-data-modeling/README.md#lesson-026-document-limits-and-modeling-anti-patterns)
-- [Lesson 027 — MongoDB Schema Validation](./03-data-modeling/README.md#lesson-027-mongodb-schema-validation)
-- [Lesson 028 — Data Modeling Exercises and Review](./03-data-modeling/README.md#lesson-028-data-modeling-exercises-and-review)
+- [Lesson 021 — Embedding vs Referencing](./03-data-modeling/021-embedding-vs-referencing.md)
+- [Lesson 022 — One-to-One and One-to-Many Relationships](./03-data-modeling/022-one-to-one-one-to-many.md)
+- [Lesson 023 — Many-to-Many Relationships](./03-data-modeling/023-many-to-many.md)
+- [Lesson 024 — Designing E-commerce Schemas](./03-data-modeling/024-ecommerce-schemas.md)
+- [Lesson 025 — Schema Design for Queries and Growth](./03-data-modeling/025-schema-design-queries-growth.md)
+- [Lesson 026 — Document Limits and Modeling Anti-patterns](./03-data-modeling/026-document-limits-antipatterns.md)
+- [Lesson 027 — MongoDB Schema Validation](./03-data-modeling/027-mongodb-schema-validation.md)
+- [Lesson 028 — Data Modeling Exercises and Review](./03-data-modeling/028-modeling-exercises-review.md)
 
 ### [Section 4 — Indexes & Query Performance](./04-indexing-performance/README.md)
 
