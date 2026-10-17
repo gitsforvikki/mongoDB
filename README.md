@@ -27,7 +27,7 @@ MongoDB databases, documents, BSON, CRUD, query operators, indexing, aggregation
 - [Lesson 005 — Databases, Collections and Documents](./01-mongodb-foundations/005-databases-collections-documents.md)
 - [Lesson 006 — BSON, ObjectId and MongoDB Data Types](./01-mongodb-foundations/006-bson-objectid-data-types.md)
 - [Lesson 007 — mongosh Essentials and Basic Commands](./01-mongodb-foundations/007-mongosh-essentials-basic-commands.md)
-- [Lesson 008 — MongoDB CRUD Mental Model](./01-mongodb-foundations/README.md#lesson-008-mongodb-crud-mental-model)
+- [Lesson 008 — MongoDB CRUD Mental Model](./01-mongodb-foundations/008-mongodb-crud-mental-model.md)
 
 ### [Section 2 — MongoDB CRUD & Querying](./02-crud-and-querying/README.md)
 
@@ -179,6 +179,6 @@ MongoDB Community Server or Atlas Free cluster, `mongosh`, MongoDB Compass, Node
 - MongoDB shell query syntax is labeled `js` but executed in `mongosh`; Mongoose examples run from Node.js.
 - Query and Mongoose behavior can vary by server/library version; follow official docs for the installed versions.
 - MongoDB indexes/unique constraints and real DB behavior must be tested; Mongoose schema validation alone is not a database constraint.
-- The first two lessons in Section 1 have dedicated Markdown pages. Remaining lesson links point to outlines in section READMEs until their content is written.
+- All eight lessons in Section 1 have dedicated Markdown pages. Remaining section links point to outlines until their content is written.
 
 **Total: 12 sections · 108 lessons.**
