@@ -2,7 +2,7 @@
 
 [← Back to full curriculum](../README.md)
 
-> **Status:** Curriculum planned. Lesson content will be written incrementally; the headings below are clickable study checkpoints rather than finished lesson files.
+> **Status:** In progress — Lessons 046–049 published; Lessons 050–055 remain planned.
 
 ## Learning objectives
 
@@ -10,25 +10,25 @@ Understand mongoose odm fundamentals using MongoDB commands, Mongoose ODM where 
 
 ## Lessons
 
-### Lesson 046 — Why Mongoose? Driver vs ODM
+### [Lesson 046 — Why Mongoose? Driver vs ODM](./046-why-mongoose-driver-vs-odm.md)
 
 **You will learn:** What Mongoose adds and what it does not.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 047 — Set Up Express 5 + Mongoose + Atlas
+### [Lesson 047 — Set Up Express 5 + Mongoose + Atlas](./047-express5-mongoose-atlas-setup.md)
 
 **You will learn:** ES modules, dependencies and safe connection.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 048 — Schemas and Models
+### [Lesson 048 — Schemas and Models](./048-schemas-models.md)
 
 **You will learn:** Schema definition vs compiled Model.
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 049 — Schema Types, Defaults and Required Fields
+### [Lesson 049 — Schema Types, Defaults and Required Fields](./049-schema-types-defaults-required.md)
 
 **You will learn:** ObjectId, subdocs, arrays, maps, timestamps.
 
