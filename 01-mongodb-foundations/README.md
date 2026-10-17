@@ -2,7 +2,7 @@
 
 [← Back to full curriculum](../README.md)
 
-> **Status:** Lessons 001–007 are available as full Markdown lessons. The remaining headings are study checkpoints to be expanded later.
+> **Status:** All eight lessons are available as full Markdown lessons.
 
 ## Learning objectives
 
@@ -52,7 +52,7 @@ Understand mongodb foundations using MongoDB commands, Mongoose ODM where releva
 
 **Practice checkpoint:** Apply the concept to a product, order, user, job-tracker or chat example; explain the expected database behavior in simple words.
 
-### Lesson 008 — MongoDB CRUD Mental Model
+### [Lesson 008 — MongoDB CRUD Mental Model](./008-mongodb-crud-mental-model.md)
 
 **You will learn:** Documents through a simple e-commerce example.
 
