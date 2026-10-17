@@ -2,7 +2,7 @@
 
 [← Back to full curriculum](../README.md)
 
-> **Status:** Curriculum planned. Lesson content will be written incrementally; the headings below are clickable study checkpoints rather than finished lesson files.
+> **Status:** Complete — all 12 lessons (009–020) have dedicated Markdown pages.
 
 ## Learning objectives
 
