@@ -37,12 +37,12 @@ MongoDB databases, documents, BSON, CRUD, query operators, indexing, aggregation
 - [Lesson 012 — Logical and Element Operators](./02-crud-and-querying/012-logical-element-operators.md)
 - [Lesson 013 — Nested Fields and Arrays](./02-crud-and-querying/013-nested-fields-arrays.md)
 - [Lesson 014 — Projection, Sorting, Skip and Limit](./02-crud-and-querying/014-projection-sorting-skip-limit.md)
-- [Lesson 015 — Update Operators](./02-crud-and-querying/README.md#lesson-015-update-operators)
-- [Lesson 016 — updateOne, updateMany and replaceOne](./02-crud-and-querying/README.md#lesson-016-updateone-updatemany-and-replaceone)
-- [Lesson 017 — Delete Documents and Bulk Writes](./02-crud-and-querying/README.md#lesson-017-delete-documents-and-bulk-writes)
-- [Lesson 018 — Upsert and Atomic Single-Document Updates](./02-crud-and-querying/README.md#lesson-018-upsert-and-atomic-single-document-updates)
-- [Lesson 019 — Regex, Text and Search Options](./02-crud-and-querying/README.md#lesson-019-regex-text-and-search-options)
-- [Lesson 020 — Pagination: Offset vs Cursor](./02-crud-and-querying/README.md#lesson-020-pagination-offset-vs-cursor)
+- [Lesson 015 — Update Operators](./02-crud-and-querying/015-update-operators.md)
+- [Lesson 016 — updateOne, updateMany and replaceOne](./02-crud-and-querying/016-updateone-updatemany-replaceone.md)
+- [Lesson 017 — Delete Documents and Bulk Writes](./02-crud-and-querying/017-delete-documents-bulk-writes.md)
+- [Lesson 018 — Upsert and Atomic Single-Document Updates](./02-crud-and-querying/018-upsert-atomic-updates.md)
+- [Lesson 019 — Regex, Text and Search Options](./02-crud-and-querying/019-regex-text-search.md)
+- [Lesson 020 — Pagination: Offset vs Cursor](./02-crud-and-querying/020-pagination-offset-vs-cursor.md)
 
 ### [Section 3 — Document Modeling & Schema Design](./03-data-modeling/README.md)
 
