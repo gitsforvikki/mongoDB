@@ -20,8 +20,8 @@ MongoDB databases, documents, BSON, CRUD, query operators, indexing, aggregation
 
 ### [Section 1 — MongoDB Foundations](./01-mongodb-foundations/README.md)
 
-- [Lesson 001 — What Is MongoDB and Why Use It?](./01-mongodb-foundations/README.md#lesson-001-what-is-mongodb-and-why-use-it)
-- [Lesson 002 — MongoDB vs Mongoose vs Atlas](./01-mongodb-foundations/README.md#lesson-002-mongodb-vs-mongoose-vs-atlas)
+- [Lesson 001 — What Is MongoDB and Why Use It?](./01-mongodb-foundations/001-what-is-mongodb.md)
+- [Lesson 002 — MongoDB vs Mongoose vs Atlas](./01-mongodb-foundations/002-mongodb-vs-mongoose-vs-atlas.md)
 - [Lesson 003 — Installation: Local MongoDB, Compass and mongosh](./01-mongodb-foundations/README.md#lesson-003-installation-local-mongodb-compass-and-mongosh)
 - [Lesson 004 — MongoDB Atlas Setup and Connection Strings](./01-mongodb-foundations/README.md#lesson-004-mongodb-atlas-setup-and-connection-strings)
 - [Lesson 005 — Databases, Collections and Documents](./01-mongodb-foundations/README.md#lesson-005-databases-collections-and-documents)
@@ -179,6 +179,6 @@ MongoDB Community Server or Atlas Free cluster, `mongosh`, MongoDB Compass, Node
 - MongoDB shell query syntax is labeled `js` but executed in `mongosh`; Mongoose examples run from Node.js.
 - Query and Mongoose behavior can vary by server/library version; follow official docs for the installed versions.
 - MongoDB indexes/unique constraints and real DB behavior must be tested; Mongoose schema validation alone is not a database constraint.
-- The clickable links above currently point to **lesson outlines** inside section READMEs; each will become its own detailed Markdown lesson as the course progresses.
+- The first two lessons in Section 1 have dedicated Markdown pages. Remaining lesson links point to outlines in section READMEs until their content is written.
 
 **Total: 12 sections · 108 lessons.**
