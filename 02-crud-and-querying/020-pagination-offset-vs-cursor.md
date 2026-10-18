@@ -67,6 +67,157 @@ const products = await Product.find({
 ```
 In a real API, use the schema's actual ID type, validate cursor input, and encode cursor values into an opaque token rather than trusting raw query parameters.
 
+### 4.1 Where do `lastPrice` and `lastId` come from?
+
+**Simple answer:** They come from the **last product returned on the previous page**. We do **not** store them separately in MongoDB.
+
+Example sorted data (page size = 2):
+
+| _id | Product | Price |
+| --- | --- | --- |
+| 1 | Mouse | 100 |
+| 2 | Keyboard | 100 |
+| 3 | Monitor | 200 |
+| 4 | Laptop | 300 |
+| 5 | Webcam | 400 |
+
+1. First request: no cursor → return Mouse and Keyboard.
+2. The **last product is Keyboard** → `lastPrice = 100`, `lastId = 2`.
+3. Backend encodes these two values into a `nextCursor` and returns it.
+4. Frontend saves that token in React state and sends it on **Load More**.
+5. Backend decodes it and queries for products **after** that pair.
+6. Page 2 returns Monitor and Laptop; its last product becomes the next cursor.
+
+```mermaid
+sequenceDiagram
+    participant UI as React Frontend
+    participant API as Express + Mongoose
+    participant DB as MongoDB
+    UI->>API: GET /api/products (no cursor)
+    API->>DB: Sort by price, _id; limit 3
+    DB-->>API: Mouse, Keyboard, Monitor
+    API-->>UI: [Mouse, Keyboard] + nextCursor(100, 2)
+    UI->>API: GET /api/products?cursor=...
+    API->>DB: Fetch after (100, 2); limit 3
+    DB-->>API: Monitor, Laptop, Webcam
+    API-->>UI: [Monitor, Laptop] + nextCursor(300, 4)
+```
+
+### 4.2 Express + Mongoose implementation (numeric `_id` demo)
+
+The following example uses **numeric `_id` values to match this lesson's dataset**. In typical Mongoose apps, `_id` is an ObjectId; convert and validate the decoded ID according to your actual schema.
+
+```js
+import express from "express";
+import { Product } from "./models/Product.js";
+
+const app = express();
+
+app.get("/api/products", async (req, res) => {
+  const pageSize = 2;
+  let cursor = null;
+
+  if (req.query.cursor !== undefined) {
+    try {
+      if (typeof req.query.cursor !== "string" ||
+          req.query.cursor.length > 1024) {
+        return res.status(400).json({ message: "Invalid cursor" });
+      }
+
+      cursor = JSON.parse(
+        Buffer.from(req.query.cursor, "base64url").toString("utf8")
+      );
+
+      if (!cursor || typeof cursor !== "object" ||
+          !Number.isFinite(cursor.lastPrice) ||
+          !Number.isSafeInteger(cursor.lastId)) {
+        return res.status(400).json({ message: "Invalid cursor values" });
+      }
+    } catch {
+      return res.status(400).json({ message: "Malformed cursor" });
+    }
+  }
+
+  const filter = cursor
+    ? {
+        $or: [
+          { price: { $gt: cursor.lastPrice } },
+          { price: cursor.lastPrice, _id: { $gt: cursor.lastId } }
+        ]
+      }
+    : {};
+
+  // Fetch one extra document to detect whether another page exists.
+  const rows = await Product.find(filter)
+    .sort({ price: 1, _id: 1 })
+    .limit(pageSize + 1)
+    .lean();
+
+  const hasMore = rows.length > pageSize;
+  const data = rows.slice(0, pageSize);
+  const lastProduct = data.at(-1);
+
+  const nextCursor = hasMore && lastProduct
+    ? Buffer.from(JSON.stringify({
+        lastPrice: lastProduct.price,
+        lastId: lastProduct._id
+      })).toString("base64url")
+    : null;
+
+  return res.json({ data, nextCursor, hasMore });
+});
+```
+
+**Why `pageSize + 1`?** If you want two products, fetch three. The third tells you that a further page exists, but return only the first two.
+
+**Production note:** Base64url makes a cursor opaque-looking, **not secure or tamper-proof**. Validate the entire payload and consider HMAC-signed cursors; apply the same search filters on every page. Use a suitable compound index and stable sort keys.
+
+### 4.3 React frontend: maintain the cursor in state
+
+```jsx
+import { useState } from "react";
+
+export default function Products() {
+  const [products, setProducts] = useState([]);
+  const [cursor, setCursor] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  async function loadMore() {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    try {
+      const url = cursor
+        ? `/api/products?cursor=${encodeURIComponent(cursor)}`
+        : "/api/products";
+
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to load products");
+
+      const result = await response.json();
+      setProducts(prev => [...prev, ...result.data]);
+      setCursor(result.nextCursor);
+      setHasMore(result.hasMore);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      {products.map(product => (
+        <p key={product._id}>{product.name} - ₹{product.price}</p>
+      ))}
+      <button disabled={loading || !hasMore} onClick={loadMore}>
+        {loading ? "Loading..." : hasMore ? "Load More" : "No more products"}
+      </button>
+    </div>
+  );
+}
+```
+
+The frontend **does not need to calculate** `lastPrice` or `lastId`. It only stores the backend's `nextCursor` and sends it with the next request. Reset the products and cursor when changing sorting or filters.
+
 ## 5. API response design
 ```json
 {
