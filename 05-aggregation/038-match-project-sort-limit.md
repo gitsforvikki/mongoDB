@@ -2,6 +2,214 @@
 
 [← Section 5](./README.md) · [Full curriculum](../README.md)
 
+## Beginner-friendly walkthrough — Product listing example
+
+The easiest way to remember these stages:
+
+| Stage | Question | Similar SQL concept |
+| --- | --- | --- |
+| `$match` | Which documents do I need? | `WHERE` |
+| `$project` | Which fields should I return? | `SELECT` |
+| `$sort` | In what order? | `ORDER BY` |
+| `$limit` | How many results? | `LIMIT` |
+
+### 1. Sample products
+
+Use a disposable practice collection:
+
+```js
+use mongoCourse
+db.lesson38Products.drop();
+db.lesson38Products.insertMany([
+  { _id: 1, name: "Laptop", category: "Electronics", price: 50000, stock: 10 },
+  { _id: 2, name: "Mouse", category: "Electronics", price: 500, stock: 50 },
+  { _id: 3, name: "Keyboard", category: "Electronics", price: 1500, stock: 20 },
+  { _id: 4, name: "Shoes", category: "Fashion", price: 2000, stock: 30 },
+  { _id: 5, name: "Monitor", category: "Electronics", price: 12000, stock: 15 },
+  { _id: 6, name: "T-Shirt", category: "Fashion", price: 800, stock: 40 }
+]);
+```
+
+**Frontend requirement:** Show only Electronics products, return their names and prices, order by lowest price first, and display a maximum of three.
+
+### 2. `$match` — Filter documents
+
+```js
+db.lesson38Products.aggregate([
+  { $match: { category: "Electronics" } }
+]);
+```
+
+This works like `find({category:"Electronics"})`: Laptop, Mouse, Keyboard and Monitor pass through. **`$match` filters documents; it does not remove fields from matching documents.**
+
+You can combine conditions:
+
+```js
+{ $match: { category: "Electronics", price: { $gte: 1000 } } }
+```
+
+This means category is Electronics **AND** price is at least 1000.
+
+### 3. `$project` — Select or calculate fields
+
+```js
+{
+  $project: {
+    _id: 0,
+    name: 1,
+    price: 1
+  }
+}
+```
+
+- `1` means **include** that field.
+- `0` means **exclude** that field.
+- `_id` is included by default unless explicitly excluded.
+
+`$project` can also create calculated values:
+
+```js
+{
+  $project: {
+    _id: 0,
+    name: 1,
+    price: 1,
+    discountedPrice: { $multiply: ["$price", 0.9] }
+  }
+}
+```
+
+Here `"$price"` means **read the current document's price field**. The calculation does **not** update the saved product price.
+
+### 4. `$sort` — Choose the order
+
+```js
+{ $sort: { price: 1 } }  // cheapest first
+{ $sort: { price: -1 } } // most expensive first
+```
+
+For stable pagination when prices can repeat, use a tie-breaker:
+
+```js
+{ $sort: { price: 1, _id: 1 } }
+```
+
+### 5. `$limit` — Return only N documents
+
+```js
+{ $limit: 3 }
+```
+
+This keeps at most three documents from the **current stage's output**. It does not itself decide which documents are cheapest or newest.
+
+### 6. All four stages together
+
+```js
+db.lesson38Products.aggregate([
+  { $match: { category: "Electronics" } },
+  { $project: { _id: 0, name: 1, price: 1 } },
+  { $sort: { price: 1 } },
+  { $limit: 3 }
+]);
+```
+
+**Stage-by-stage flow:**
+
+```mermaid
+flowchart TD
+ A["6 product documents"] --> B["$match: Electronics only"]
+ B --> C["4 matching products"]
+ C --> D["$project: name and price"]
+ D --> E["$sort: price ascending"]
+ E --> F["$limit: 3"]
+ F --> G["Mouse 500; Keyboard 1500; Monitor 12000"]
+```
+
+**Expected output:**
+
+```js
+[
+  { name: "Mouse", price: 500 },
+  { name: "Keyboard", price: 1500 },
+  { name: "Monitor", price: 12000 }
+]
+```
+
+Laptop is the fourth Electronics product after sorting by price, so it is excluded by `$limit:3`.
+
+### 7. Why stage order matters
+
+**Cheapest three products:**
+
+```js
+[
+  { $sort: { price: 1 } },
+  { $limit: 3 }
+]
+```
+
+**Not the same meaning:**
+
+```js
+[
+  { $limit: 3 },
+  { $sort: { price: 1 } }
+]
+```
+
+The second version limits an otherwise unordered input first and sorts only that subset. It does not guarantee the collection's cheapest three products.
+
+**Another common mistake:** Removing `price` before sorting by it:
+
+```js
+[
+  { $project: { _id: 0, name: 1 } },
+  { $sort: { price: 1 } }
+]
+```
+
+After `$project`, the `price` field is missing from the documents. Instead, sort before removing it:
+
+```js
+[
+  { $sort: { price: 1 } },
+  { $project: { _id: 0, name: 1 } }
+]
+```
+
+MongoDB's optimizer may rearrange some physical operations, but the logical meaning of the pipeline stays the same.
+
+### 8. Express 5 + Mongoose example
+
+```js
+// Assume Product is an imported Mongoose model
+const getProducts = async (req, res) => {
+  const products = await Product.aggregate([
+    { $match: { category: "Electronics" } },
+    { $sort: { price: 1, _id: 1 } },
+    { $project: { name: 1, price: 1 } },
+    { $limit: 3 }
+  ]);
+
+  return res.status(200).json({
+    success: true,
+    data: products
+  });
+};
+```
+
+This assumes your Product model has `category`, `name`, and numeric `price` fields.
+
+### 9. Practice and interview questions
+
+1. Find the **top two most expensive Electronics products**. Hint: `$match`, then `$sort:{price:-1}`, then `$limit:2`.
+2. Return only `name` and `price`, excluding `_id`.
+3. Add a `discountedPrice` field equal to 90% of the original price.
+4. Explain why `$sort` before `$limit` is important.
+5. Explain the difference between `$match` and `$project`: **`$match` chooses documents; `$project` chooses or computes fields.**
+
+---
+
 ## Mental model
 These four stages answer: **Which documents? Which fields? In what order? How many?**
 
