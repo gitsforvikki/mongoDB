@@ -211,6 +211,148 @@ process.once("SIGTERM", () => shutdown("SIGTERM").catch(console.error));
 ```
 This is a teaching baseline. Production shutdown should have a bounded timeout and explicit failure exit handling; orchestrators may terminate the process after a grace period.
 
+
+### Important — Must Read: Graceful Shutdown Explained (Step by Step)
+
+**Graceful shutdown** ka matlab hai: jab Node.js application band hone wali ho, tab server ko achanak forcefully kill karne ke bajay **new HTTP connections accept karna band karo, active requests ko finish hone ka mauka do, MongoDB connections close karo, aur process ko naturally exit hone do**.
+
+Imagine: customer ne \`POST /orders\` request bheji hai aur usi time deployment restart ho raha hai. Agar process instantly terminate ho jaye, request beech mein ruk sakti hai. Graceful shutdown us risk ko kam karta hai. **Lekin guarantee nahi:** long-running/stuck requests ke liye timeout aur recovery design chahiye.
+
+#### 1. \`shutdown(signal)\` kya karta hai?
+
+\`\`\`js
+async function shutdown(signal) {
+  console.log(\`Received \${signal}; shutting down\`);
+
+  if (server) await new Promise((resolve, reject) =>
+    server.close(err => err ? reject(err) : resolve())
+  );
+
+  await mongoose.disconnect();
+  process.exitCode = 0;
+}
+\`\`\`
+
+| Line | Simple meaning | Why needed? |
+| --- | --- | --- |
+| \`async function shutdown(signal)\` | Shutdown function Promise return karta hai | \`await\` use kar sakte hain |
+| \`console.log(...)\` | Kaunsa signal mila, log karo | Debugging/operations |
+| \`if (server)\` | Server object available hai? | Startup fail hua ho to \`server\` undefined ho sakta hai |
+| \`await new Promise(...)\` | HTTP server ke close hone ka wait | MongoDB disconnect karne se pehle requests finish karne ka mauka |
+| \`await mongoose.disconnect()\` | Mongoose DB connections close hone ka wait | Database sockets/resources release |
+| \`process.exitCode = 0\` | Successful exit status set | Process ko immediately force-kill nahi karta |
+
+#### 2. \`server\` kahan se aaya?
+
+Section 6 mein pehle ye code hai:
+
+\`\`\`js
+let server;
+server = app.listen(5000, () => console.log("API listening"));
+\`\`\`
+
+\`app.listen()\` **HTTP server object** return karta hai. Isi object par \`server.close()\` method available hota hai. \`server.close()\` **naye connections accept karna band karta hai** aur active requests complete hone ka wait karta hai (Node.js version/connection behavior ke hisaab se details differ kar sakti hain).
+
+#### 3. \`server.close()\` ko \`new Promise()\` mein wrap kyon kiya?
+
+\`server.close(callback)\` ek **callback-based API** hai; directly \`await server.close()\` likhne se callback completion ka wait nahi hota.
+
+\`\`\`js
+await new Promise((resolve, reject) => {
+  server.close((err) => {
+    if (err) {
+      reject(err); // closing failed
+    } else {
+      resolve();   // HTTP server fully closed
+    }
+  });
+});
+\`\`\`
+
+Execution flow:
+
+\`\`\`text
+shutdown() called
+   ↓
+server.close(callback)
+   ↓
+Stop accepting new connections; wait for active HTTP work
+   ↓
+callback runs
+   ├── error → reject(err) → shutdown Promise rejects
+   └── success → resolve() → next statement executes
+                                      ↓
+                             await mongoose.disconnect()
+\`\`\`
+
+**Important:** \`await\` sirf Promise ka wait karta hai; isi liye callback ko Promise mein convert kiya gaya. Agar close fail ho, current example mein \`mongoose.disconnect()\` tak execution nahi pahunchega, because Promise reject ho gaya. Production mein \`try/finally\` ya cleanup strategy se database cleanup bhi attempt karna useful hai.
+
+#### 4. \`SIGINT\` aur \`SIGTERM\` kya hote hain?
+
+Operating system Node.js process ko **signals** bhej sakta hai:
+
+| Signal | Common situation |
+| --- | --- |
+| \`SIGINT\` | Terminal mein **Ctrl + C** |
+| \`SIGTERM\` | Docker stop, deployment restart, process manager se termination request |
+
+\`\`\`js
+process.once("SIGINT", () => shutdown("SIGINT").catch(console.error));
+process.once("SIGTERM", () => shutdown("SIGTERM").catch(console.error));
+\`\`\`
+
+- \`process\` Node.js ka global process object hai.
+- \`process.once(event, listener)\` listener ko **us event ke first occurrence par ek baar** execute karta hai; \`process.on(...)\` har occurrence par execute kar sakta hai.
+- \`() => shutdown("SIGINT")\` signal milne par shutdown start karta hai.
+- \`shutdown()\` async hai, isliye Promise return karta hai; \`.catch(console.error)\` rejected Promise ko log karta hai.
+
+**Production caution:** \`.catch(console.error)\` error log karta hai, lekin failure ka non-zero exit code ensure nahi karta. Robust shutdown mein errors handle karke \`process.exitCode = 1\`, bounded grace period aur repeated signals ki policy define karo. \`process.once\` alone repeated signals ko fully coordinate nahi karta.
+
+#### 5. Real-world execution example
+
+\`\`\`text
+API running (Express + MongoDB)
+        ↓
+User presses Ctrl + C
+        ↓
+Node.js receives SIGINT
+        ↓
+process.once("SIGINT", ...) invokes shutdown("SIGINT")
+        ↓
+Log: Received SIGINT; shutting down
+        ↓
+await server.close() wrapper
+        ↓
+No new connections; allow active requests to finish
+        ↓
+await mongoose.disconnect()
+        ↓
+process.exitCode = 0
+        ↓
+Node.js exits naturally when no active work keeps it alive
+\`\`\`
+
+Possible console output:
+
+\`\`\`text
+MongoDB connected: learning
+API listening
+^C
+Received SIGINT; shutting down
+MongoDB disconnected
+\`\`\`
+
+#### 6. Why \`process.exitCode = 0\` instead of \`process.exit(0)\`?
+
+- \`process.exitCode = 0\`: successful exit status set karta hai, **process immediately terminate nahi hota**.
+- \`process.exit(0)\`: process ko forcefully exit karne ki request karta hai; pending work/log writes interrupt ho sakte hain.
+
+**Production note:** Ye lesson teaching baseline hai. Real services mein HTTP shutdown timeout, in-flight work deadline, forced-close fallback, database cleanup even after close errors, and failure exit status important hain. \`server.close()\` indefinite wait kar sakta hai if requests/connections never finish.
+
+**Interview summary:** \`startServer()\` application ko start karta hai. \`shutdown()\` HTTP listener ko close karke aur Mongoose disconnect karke application ko **safely stop** karne ki koshish karta hai.
+
+
+
 ## 7. Run and verify
 ```bash
 npm run dev
