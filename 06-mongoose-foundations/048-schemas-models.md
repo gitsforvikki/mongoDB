@@ -69,20 +69,129 @@ await User.insertMany([
 
 ### Model queries vs document methods
 
-```js
-const found = await User.findOne({ name: "Asha" }); // Model query
-if (found) {
-  found.status = "INACTIVE";
-  await found.save(); // Document method; tracks changed paths
-}
+Mongoose mein **Model**, **Query**, aur **Document** related hain, lekin same cheez nahi hain:
 
+- **Model (\`User\`)**: schema se compiled class-like interface. Collection ke documents find, create, update, delete karne ke methods provide karta hai.
+- **Model query (\`User.findOne(...)\`)**: Model se query build hoti hai jo MongoDB mein matching records search karti hai. \`find()\`, \`findOne()\`, \`findById()\`, \`updateOne()\` etc. Mongoose **Query** objects return karte hain.
+- **Document (\`user\`)**: \`findOne()\` se mila hydrated record ya \`new User(...)\` se banaya instance. Is par \`save()\`, \`validate()\` aur custom instance methods call kar sakte ho.
+
+#### 1. Model queries: collection mein records find/update/delete karo
+
+Assume a \`User\` model with fields \`name\`, \`age\`, \`isActive\`, \`status\`.
+
+\`\`\`js
+// Read documents
+const users = await User.find({ isActive: true }); // array
+const user = await User.findOne({ name: "Asha" }); // document or null
+const byId = await User.findById(userId);         // document or null
+
+// Update without loading the document first
 await User.updateOne(
-  { name: "Ravi" },
+  { name: "Asha" },
   { $set: { status: "INACTIVE" } }
-); // Query update; does not use save middleware
-```
+);
 
-**Why does this distinction matter?** Document validation and save hooks are tied to document saves. Query updates can be more efficient for targeted modifications, but have different middleware and validation rules. A query such as `find()` builds a query object that executes when awaited or explicitly executed with `.exec()`.
+// Delete a matching record
+await User.deleteOne({ name: "Ravi" });
+\`\`\`
+
+**Why useful?** Jab database mein matching records search karne hain, multiple records read karne hain, ya direct targeted update chahiye. \`User.find()\` query object build karta hai; \`await\` ya \`.exec()\` par execute hota hai.
+
+#### 2. Document methods: ek particular record par kaam karo
+
+\`\`\`js
+const user = await User.findOne({ name: "Asha" }); // Model query
+
+if (user) {
+  user.age = 26;      // change in the Mongoose document
+  await user.save();  // Document method: persist the change
+}
+\`\`\`
+
+Yahan \`User.findOne()\` **Model query** hai; \`user.save()\` **Document method** hai. \`save()\` document validation, change tracking aur save middleware ke saath kaam karta hai.
+
+#### 3. Custom document (instance) methods
+
+Business logic ko ek document ke saath attach kar sakte hain:
+
+\`\`\`js
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  age: Number,
+  isActive: { type: Boolean, default: true }
+});
+
+userSchema.methods.isAdult = function () {
+  return this.age >= 18;
+};
+
+const User = mongoose.model("User", userSchema);
+const user = await User.findOne({ name: "Asha" });
+
+if (user) {
+  console.log(user.isAdult()); // true when age >= 18
+}
+\`\`\`
+
+\`isAdult()\` ek **custom document method** hai. Normal \`function\` use kiya gaya hai kyunki \`this\` current Mongoose document ko refer karta hai. \`isAdult()\` apne aap database query nahi chalata; loaded document ki age check karta hai.
+
+#### 4. Same profile update: model query vs document save
+
+**Approach A — direct model query:**
+
+\`\`\`js
+await User.findByIdAndUpdate(
+  userId,
+  { $set: { name: "Rahul" } },
+  { runValidators: true }
+);
+\`\`\`
+
+Ismein pehle document fetch karna necessary nahi. Query update middleware apply ho sakta hai; **document \`save\` middleware nahi**. Update validators ko \`runValidators:true\` se enable karna padta hai, aur inki coverage document validation se differ kar sakti hai.
+
+**Approach B — document method:**
+
+\`\`\`js
+const user = await User.findById(userId);
+if (!user) throw new Error("User not found");
+
+user.name = "Rahul";
+await user.save();
+\`\`\`
+
+Ismein document load hota hai, field change hoti hai, aur \`save()\` document validation/save hooks run karta hai. Extra read ki cost hai, aur concurrent updates ke liye separate consistency considerations ho sakti hain.
+
+| Feature | Model query | Document method |
+| --- | --- | --- |
+| Called on | \`User\` Model | \`user\` document |
+| Example | \`User.find()\`, \`User.updateOne()\` | \`user.save()\`, \`user.validate()\` |
+| Purpose | Search/modify matching DB records | One hydrated document par operations |
+| Can target many? | Yes, e.g. \`find()\`, \`updateMany()\` | Usually one document |
+| Middleware | Query middleware for query operations | Document/save middleware for \`save()\` |
+| Validation | Update validators have separate rules | \`save()\` validates document |
+
+#### 5. Bonus: Query helpers are NOT document methods
+
+\`\`\`js
+userSchema.query.onlyActive = function () {
+  return this.where({ isActive: true });
+};
+
+// After model compilation:
+const activeUsers = await User.find().onlyActive();
+\`\`\`
+
+\`onlyActive()\` ek **query helper** hai: ye query ko modify karta hai, individual user document ko nahi. Iske opposite \`user.isAdult()\` document instance method hai.
+
+**Remember:**
+- \`User.find()\` → database mein users **dhundo**.
+- \`user.save()\` → ek particular user's changes **save karo**.
+- \`user.isAdult()\` → loaded user ki business condition **check karo**.
+- \`User.find().onlyActive()\` → query par reusable filter **lagao**.
+
+**Quick check:** \`const user = await User.findById(id);\` ke baad \`user.save()\` **document method** hai, model query nahi. Null result ko pehle check karna zaroori hai.
 
 ### Common misconception: `ref` is not a foreign key
 
