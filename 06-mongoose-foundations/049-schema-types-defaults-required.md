@@ -88,6 +88,40 @@ For many INR applications, storing `priceMinor: 50100` to represent ₹501.00 is
 
 ### Update validators: an important trap
 
+Mongoose mein **update validators** ka matlab hai: query-based update ke time schema validation rules check karna. Lekin `updateOne()` ka validation behavior `document.save()` se different hai.
+
+#### 1. Example schema: age 18 se 60 ke beech honi chahiye
+
+```js
+import mongoose from "mongoose";
+
+const memberSchema = new mongoose.Schema({
+  name: String,
+  age: {
+    type: Number,
+    min: 18,
+    max: 60
+  }
+});
+
+const Member = mongoose.model("Member", memberSchema);
+```
+
+Is schema mein `age` ke liye `min: 18` aur `max: 60` validators hain.
+
+#### 2. By default `updateOne()` par validators disabled hote hain
+
+```js
+await Member.updateOne(
+  { _id: member._id },
+  { $set: { age: 12 } }
+);
+```
+
+**Kya hoga?** Update validators by default off hone ki wajah se `age: 12` update ho sakta hai, even though schema mein minimum 18 hai. (Assume matching member exists.)
+
+#### 3. `runValidators: true` lagane par
+
 ```js
 await Member.updateOne(
   { _id: member._id },
@@ -96,7 +130,87 @@ await Member.updateOne(
 );
 ```
 
-Query updates do **not** behave exactly like `member.age = 12; await member.save()`. Update validators are opt-in for many query update methods and generally validate updated paths/operators rather than the entire existing document. They also have special `this` behavior for custom validators. Use the right operation for the rule you're enforcing, and test edge cases.
+**Step-by-step:**
+
+1. `{ _id: member._id }` — kaunsa document update karna hai (filter).
+2. `{ $set: { age: 12 } }` — `age` ko 12 set karna hai.
+3. `{ runValidators: true }` — update validators enable karo.
+4. Mongoose `age` ka `min: 18` validator check karega.
+5. `12 < 18` hai, isliye **ValidationError** aayega aur update reject hoga.
+
+**Typical error message:**
+
+```text
+ValidationError: Validation failed:
+age: Path `age` (12) is less than minimum allowed value (18).
+```
+
+Error ko handle karne ka example:
+
+```js
+try {
+  await Member.updateOne(
+    { _id: member._id },
+    { $set: { age: 12 } },
+    { runValidators: true }
+  );
+} catch (error) {
+  if (error.name === "ValidationError") {
+    console.log(error.message);
+  } else {
+    throw error;
+  }
+}
+```
+
+#### 4. Important trap: poora existing document validate nahi hota
+
+`runValidators: true` hone par bhi update validators **generally sirf updated paths** par run hote hain.
+
+```js
+await Member.updateOne(
+  { _id: member._id },
+  { $set: { name: "Rahul" } },
+  { runValidators: true }
+);
+```
+
+Yahan `age` update nahi ho rahi, toh `age` ka `min` validator normally check nahi hoga—even if database mein existing age invalid hai.
+
+**Another trap: `$inc` update operator**
+
+```js
+await Member.updateOne(
+  { _id: member._id },
+  { $inc: { age: -20 } },
+  { runValidators: true }
+);
+```
+
+Mongoose update validators `$inc` operator par run nahi karte. Isliye age minimum se neeche ja sakti hai despite `runValidators: true`. Validation supported update operators aur modified paths par depend karti hai.
+
+#### 5. `member.save()` vs `Member.updateOne()`
+
+```js
+// Document approach
+const member = await Member.findById(memberId);
+if (!member) throw new Error("Member not found");
+
+member.age = 12;
+await member.save(); // document validation runs; rejects age 12
+```
+
+| Feature | `member.save()` | `Member.updateOne()` |
+| --- | --- | --- |
+| Validation by default | Enabled | Disabled |
+| `runValidators: true` needed? | No | Yes |
+| Validation scope | Document validation | Updated paths/supported operators |
+| Middleware | Document save hooks | Query update hooks |
+
+**Additional nuance:** Custom validators mein query updates ke dauraan `this` normally query object hota hai, document instance nahi. Isliye cross-field rules aur custom validation logic ko test karna important hai.
+
+**Remember:** `runValidators: true` query updates par validation **enable** karta hai, lekin poore existing document ki validation **guarantee nahi** karta. Yehi update validators ka important trap hai.
+
 
 ### Schema-level security boundaries
 
