@@ -283,11 +283,121 @@ export const User = mongoose.models.User || mongoose.model("User",userSchema);
 This guard is useful in hot-reload environments where the same model module may be evaluated repeatedly. In a stable Node.js process, normal module caching already avoids repeated compilation. Calling `mongoose.model("User", differentSchema)` again can throw `OverwriteModelError`.
 
 ## 8. Explicit collection name
+
+**Explicit collection name** ka matlab: Mongoose ko clearly batana ki MongoDB mein data kis collection mein store hoga. Model name aur collection name alag concepts hain.
+
+### 8.1 By default kya hota hai?
+
 ```js
-const auditSchema = new Schema({action:String},{collection:"audit_events"});
-const AuditEvent = mongoose.model("AuditEvent",auditSchema);
+const productSchema = new Schema({
+  name: String,
+  price: Number
+});
+
+const Product = mongoose.model("Product", productSchema);
 ```
-Now the collection is `audit_events`, not the default pluralized name.
+
+Yahan JavaScript model ka naam `Product` hai. Mongoose by default collection name ko pluralize karke generally `products` use karega.
+
+| Model name | Default collection |
+| --- | --- |
+| `Product` | `products` |
+| `Customer` | `customers` |
+| `Order` | `orders` |
+
+### 8.2 Real-world example: Job application tracker
+
+Suppose tum ek job application tracker bana rahe ho aur MongoDB mein applications ka data **`job_applications`** collection mein rakhna chahte ho (instead of default `applications`).
+
+```js
+import mongoose from "mongoose";
+
+const { Schema } = mongoose;
+
+const applicationSchema = new Schema(
+  {
+    company: { type: String, required: true },
+    role: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ["APPLIED", "INTERVIEW", "OFFER", "REJECTED"],
+      default: "APPLIED"
+    }
+  },
+  {
+    collection: "job_applications",
+    timestamps: true
+  }
+);
+
+const Application = mongoose.model("Application", applicationSchema);
+```
+
+`new Schema(definition, options)` mein:
+
+1. **First argument**: `company`, `role`, `status` — document fields aur validation rules.
+2. **Second argument**: `collection: "job_applications"` — MongoDB collection ka exact name; `timestamps: true` — `createdAt` aur `updatedAt` manage karta hai.
+
+Ab ek application save karo:
+
+```js
+await Application.create({
+  company: "Acme Tech",
+  role: "Frontend Developer"
+});
+```
+
+MongoDB shell mein verify:
+
+```js
+db.job_applications.find(
+  {},
+  { company: 1, role: 1, status: 1 }
+);
+```
+
+**Example output (simplified):**
+
+```js
+{
+  _id: ObjectId("..."),
+  company: "Acme Tech",
+  role: "Frontend Developer",
+  status: "APPLIED"
+}
+```
+
+**Result:** Application code mein `Application.create()` use hota hai, lekin data MongoDB ki `job_applications` collection mein store hota hai. `applications` default name use nahi hoga.
+
+### 8.3 Another way: model() ka third argument
+
+Collection name model compile karte waqt bhi specify kar sakte ho:
+
+```js
+const applicationSchema = new Schema({
+  company: String,
+  role: String
+});
+
+const Application = mongoose.model(
+  "Application",
+  applicationSchema,
+  "job_applications"
+);
+```
+
+Ye **alternative** example hai; ek hi model ke liye dono styles ko saath specify karna zaroori nahi.
+
+### 8.4 Kab use karein?
+
+- Jab existing database mein collection ka fixed name ho.
+- Jab team naming convention follow karti ho (e.g. `job_applications`).
+- Jab automatic pluralization par depend nahi karna chahte.
+
+**Important:** `mongoose.model()` se model compile hota hai; collection automatically har case mein turant create nahi hoti. Usually first write ya explicit collection creation/index workflow par collection exist karti hai.
+
+**Interview takeaway:** **Model name** = Node.js/Mongoose API ka identifier (`Application`); **collection name** = MongoDB mein actual storage name (`job_applications`).
+
 
 ## 9. Document vs plain object
 ```js
